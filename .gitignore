@@ -1,0 +1,8 @@
+# Created by .ignore support plugin (hsz.mobi)
+### Ignore jetbrains files
+
+# IntelliJ project files
+.idea
+*.iml
+out
+gen
