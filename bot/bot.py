@@ -5,6 +5,7 @@ import os
 import logging
 import creds as c
 import csv
+import cython
 
 is_whale = ["whale"]
 reply_template = "This is a {predict}, I'm {guess_accuracy}% sure \n  " \
@@ -18,7 +19,7 @@ for logger_name in ("praw", "prawcore"):
 
 
 class Mlin:       # input to machine learning layer
-
+    print('test')
 
 
 class Readcomments:
@@ -26,10 +27,9 @@ class Readcomments:
     global is_whale
     subreddit = c.reddit.subreddit("all")
 
-
     def process_submission(submission):
         normal_title = submission.title.lower()
-        for whale_title in is_whale:
+        for normal_title in is_whale:
             if is_whale in normal_title:
                 print(submission.title)
 
