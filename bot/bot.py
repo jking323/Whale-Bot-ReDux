@@ -26,3 +26,4 @@ def process_submission(self, submission):
             print(submission.title)
 
 def mlin(self):    #calls neural engine
+    ptint('test')
