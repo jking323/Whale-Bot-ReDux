@@ -17,19 +17,12 @@ for logger_name in ("praw", "prawcore"):
     logger.setLevel(logging.DEBUG)
     logger.addHandler(handler)
 
+subreddit = c.reddit.subreddit("all")
 
-class Mlin:       # input to machine learning layer
-    print('test')
+def process_submission(self, submission):
+    normal_title = submission.title.lower()
+    for normal_title in is_whale:
+        if is_whale in normal_title:
+            print(submission.title)
 
-
-class Readcomments:
-    ml_in = Mlin
-    global is_whale
-    subreddit = c.reddit.subreddit("all")
-
-    def process_submission(submission):
-        normal_title = submission.title.lower()
-        for normal_title in is_whale:
-            if is_whale in normal_title:
-                print(submission.title)
-
+def mlin(self):    #calls neural engine
