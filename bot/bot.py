@@ -14,6 +14,9 @@ import logging
 import csv
 import cython
 import json
+from bs4 import BeautifulSoup as bs
+import requests
+import urllib.request as request
 
 
 def main(lim, sub):
@@ -52,13 +55,25 @@ def process_submission(submission):
 
 
 def filter_whales():
-    is_whale = {}
-    print('test')
+    is_whale = "Wild"
     with open('data.json') as read_data:
         data = json.load(read_data)
-        for p in data.title:
-            print('title: ' + p)
+        print(len(data))
+        for title in data:
+            post_id = [title['id']]
+            post_title = [title['title']]
+            url = [title['url']]
+            if is_whale in title['title']:
+                print(post_id + post_title + url)
+                url = str(url)
+                print(url)
+                ml_input(url)
 
+
+def ml_input(url):
+    filename = 0
+    request.urlretrieve(url, filename)
+    filename +=1
 
 #post = input("Enter number of posts to scrape! ")
 #postint = int(post)
