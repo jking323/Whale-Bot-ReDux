@@ -56,8 +56,8 @@ def filter_whales():
     print('test')
     with open('data.json') as read_data:
         data = json.load(read_data)
-        for p in data['title']:
-            print('title: ' + p['title'])
+        for p in data.title:
+            print('title: ' + p)
 
 
 #post = input("Enter number of posts to scrape! ")
