@@ -4,6 +4,7 @@ Author: Jeremy King
 Version: 0.01a
 TODO: Add logging for overall bot function
 TODO: Add logging for posts access and keep database of posts containing 'whale' for future training and validation
+TODO: convery https to http for links
 """
 
 import praw
@@ -72,8 +73,10 @@ def filter_whales():
 
 def ml_input(url):
     filename = 0
-    request.urlretrieve(url, filename)
+    file = requests.get(url)
     filename +=1
+    file = open("filename.png",file.content)
+    file.close()
 
 #post = input("Enter number of posts to scrape! ")
 #postint = int(post)
