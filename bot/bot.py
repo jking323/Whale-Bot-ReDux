@@ -56,7 +56,7 @@ def process_submission(submission):
 
 
 def filter_whales():
-    is_whale = "Wild"
+    is_whale = "husband"
     with open('data.json') as read_data:
         data = json.load(read_data)
         print(len(data))
