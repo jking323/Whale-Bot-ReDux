@@ -67,16 +67,20 @@ def filter_whales():
             if is_whale in title['title']:
                 print(post_id + post_title + url)
                 url = str(url)
+                url = url.removeprefix("['")
+                url = url.removesuffix("']")
                 print(url)
-                ml_input(url)
+                ml_input(url, data)
 
 
-def ml_input(url):
+def ml_input(url, data):
+    end_doc = len(data)
+    print(end_doc)
+    print(url)
     filename = 0
-    file = requests.get(url)
-    filename +=1
-    file = open("filename.png",file.content)
-    file.close()
+    file_name =str(filename) + ".jpg"
+    if filename is not end_doc:
+        request.urlretrieve(url,file_name)
 
 #post = input("Enter number of posts to scrape! ")
 #postint = int(post)

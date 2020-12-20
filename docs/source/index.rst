@@ -1,17 +1,16 @@
-.. Whale-Bot-ReDux documentation master file, created by
-   sphinx-quickstart on Thu Dec 17 10:35:19 2020.
+.. Whale Bot ReDux documentation master file, created by
+   sphinx-quickstart on Sun Dec 20 14:07:23 2020.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Whale-Bot-ReDux's documentation!
+Welcome to Whale Bot ReDux's documentation!
 ===========================================
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
-test
-test
-test
+
+
 
 Indices and tables
 ==================
