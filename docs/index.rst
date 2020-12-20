@@ -5,7 +5,7 @@
 
 Welcome to Whale-Bot-ReDux's documentation!
 ===========================================
-
+.. intersphinx:
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
