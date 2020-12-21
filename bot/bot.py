@@ -56,7 +56,7 @@ def process_submission(submission):
 
 
 def filter_whales():
-    is_whale = "husband"
+    is_whale = "whale"
     with open('data.json') as read_data:
         data = json.load(read_data)
         print(len(data))
@@ -79,11 +79,11 @@ def ml_input(url, data):
     print(url)
     filename = 0
     file_name =str(filename) + ".jpg"
+    #path = os.path.join(pictures/, file_name)
     if filename is not end_doc:
         request.urlretrieve(url,file_name)
 
-#post = input("Enter number of posts to scrape! ")
-#postint = int(post)
-#sub = input("Enter subreddit without /r/ ")
-#main(postint, sub)
-filter_whales()
+post = input("Enter number of posts to scrape! ")
+postint = int(post)
+sub = input("Enter subreddit without /r/ ")
+main(postint, sub)
