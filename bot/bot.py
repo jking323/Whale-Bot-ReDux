@@ -15,8 +15,6 @@ import logging
 import csv
 import cython
 import json
-from bs4 import BeautifulSoup as bs
-#import requests
 import urllib.request as request
 
 
@@ -65,39 +63,39 @@ def filter_whales():
             post_id = [title['id']]
             post_title = [title['title']]
             url = [title['url']]
-            count = 1
+            count = 0
             end_data = len(data)
-            # while count is not end_data:
             whale_dict = {}
-            filter_whale = []
             if is_whale in title['title'.lower()]:  # dictionary that the ID and URL of filtered posts gets added to
                 whale_dict.update({"id": post_id})  # updates dict with the id
                 whale_dict.update({"url": url})  # update dict with post
-                filter_whale = []  # temporary list that will be dumped to json file
                 print(whale_dict)  # debug print statement
-                count += 1
-                print()
-                print(count)
-                filter_json(whale_dict, filter_whale, count, end_data)
+                key = ["id", "url"]
+                try:
+                    with open('filter.csv', 'a') as filter_csv:
+                        write = csv.DictWriter(filter_csv, fieldnames = key)
+                        #write.writeheader()
+                        print(whale_dict)
+                        write.writerow(whale_dict)
+                except IOError:
+                    print('I/O error!')
+                get_image()
 
 
-def filter_json(whale_dict, filter_whale, count, end_data):
-    to_filter = whale_dict
-    filter_fields = ('id', 'url')
-    sub_filter = {field: to_filter[field] for field in filter_fields}  # json magic
-    filter_whale.append(sub_filter) # appends json magic to temporary list
-    if count == end_data:
-        filter_file = json.dumps(filter_whale)
-        with open('filter_data.json', 'w') as p: # opens json file
-            json.dump(sub_filter, p, indent=4, sort_keys=True)  # dumps filter_whale to file
-
-
-def get_image(url, data):
+def get_image():
+    data = "aads"
+    with open('filter.csv', 'r') as url_dict:
+        read = csv.reader(url_dict)
+        for row in read:
+            filter_id = row[0]
+            filter_url = row[1]
+            whale_dict2 = {'id': row[0], 'url': row[1]}
+            print(whale_dict2)
     end_doc = len(data)
     print(end_doc)
     print(url)
     filename = 0
-    file_name =str(filename) + ".jpg"
+    file_name =str(filter_id) + ".jpg"
     #path = os.path.join(pictures/, file_name)
     if filename is not end_doc:
         request.urlretrieve(url,file_name)
@@ -108,3 +106,4 @@ def get_image(url, data):
 #sub = input("Enter subreddit without /r/ ")
 #main(postint, sub)
 filter_whales()
+#get_image()
