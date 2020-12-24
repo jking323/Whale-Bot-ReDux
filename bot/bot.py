@@ -8,6 +8,7 @@ TODO: convery https to http for links
 """
 
 import praw
+from creds import r
 import torch
 import numpy
 import os
@@ -16,19 +17,36 @@ import csv
 import cython
 import json
 import urllib.request as request
+import openpyxl as op
 
 
 def main(lim, sub):
-    reddit = praw.Reddit(client_id="IWswRQc_7hLrAQ",
-                         client_secret="vpXZRnAWHb1NIifcnB6lgPuEeoL-yw",
-                         redirect_uri="http://localhost:8080",
-                         refresh_token="616064543729-XZQcu8Zw8EXXqOkP1Loze2tlwn5f5Q",
-                         user_agent="whale-id-bot",
-                         username="whale-id")
+    reddit = r
+    if os.path.isfile('log.xlsx'):
+        print('Log exists, skipping!')
+    else:
+        make_xlxs()
 
     subreddit = reddit.subreddit(sub).hot(limit=lim)
     for submission in subreddit:
         process_submission(submission)
+
+
+def make_xlxs():
+    book = op.Workbook()
+    ws = book.active
+    log1 = book.create_sheet("Logs")
+    log2 = book.create_sheet("Filtered Logs")
+
+    title1 = log1['A1']
+    title2 = log1['B1']
+    title1.value = 'id'
+    title2.value = 'url'
+    title1 = log2['A1']
+    title2 = log2['B1']
+    title1.value = 'id'
+    title2.value = 'url'
+    book.save('log.xlsx')
 
 
 handler = logging.StreamHandler()
@@ -51,7 +69,7 @@ def process_submission(submission):
     json_str = json.dumps(list_of_stuff)
     with open('data.json', 'w') as f:
         json.dump(list_of_stuff, f, indent=4, sort_keys=True)
-    filter_whales()
+    #filter_whales()
 
 
 def filter_whales():
@@ -71,6 +89,12 @@ def filter_whales():
                 whale_dict.update({"url": url})  # update dict with post
                 print(whale_dict)  # debug print statement
                 key = ["id", "url"]
+                #filter_book = wb()
+                #ws = filter_book.active
+                #for
+                post_id = ws[row1]
+                filter_url = ws[row2]
+                '''
                 try:
                     with open('filter.csv', 'a') as filter_csv:
                         write = csv.DictWriter(filter_csv, fieldnames = key)
@@ -80,9 +104,10 @@ def filter_whales():
                 except IOError:
                     print('I/O error!')
                 get_image()
-
+                '''
 
 def get_image():
+
     data = "aads"
     with open('filter.csv', 'r') as url_dict:
         read = csv.reader(url_dict)
@@ -104,6 +129,6 @@ def get_image():
 #post = input("Enter number of posts to scrape! ")
 #postint = int(post)
 #sub = input("Enter subreddit without /r/ ")
-#main(postint, sub)
-filter_whales()
+main(10, 'whales')
+#filter_whales()
 #get_image()
