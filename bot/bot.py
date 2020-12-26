@@ -1,10 +1,15 @@
 """
 Bot.py
 Author: Jeremy King
-Version: 0.01a
-TODO: Add logging for overall bot function
+Version: 0.01b
+Change Log:
+*****0.01b*****
+Converted from JSON logging to xlsx format for easier data manipulation and the ability to append to files with minimal headache!
+*****0.01a:*****
+Built bot with PRAW and CSV to pull log and download whale post images
+TODO: For continued post scraping add check to ensure post hasn't already been scrapped then skip if it has.
 TODO: Add logging for posts access and keep database of posts containing 'whale' for future training and validation
-TODO: convery https to http for links
+TODO: Build function to call CNN built with pytorch
 """
 
 import praw
@@ -27,7 +32,7 @@ lim = 20
 sub = 'whales'
 
 
-def main(lim, sub):
+def bot_main(lim, sub):
     global rows
     global log_created
     log_created = 0
@@ -111,7 +116,7 @@ def filter_whales():
         for column in "A":
             cell_name = "{}{}".format(column, row)
             test = unfilter_logs[cell_name].value
-            unfilter_logs.cell(column=1, row=rows, value=test)
+            filter_logs.cell(column=1, row=rows, value=test)
             print(test)
     ms.save('log.xlsx')
     #unfilter_logs_value = unfilter_logs.cell(row=log_rows, column=1)
@@ -144,6 +149,6 @@ def get_image():
 #post = input("Enter number of posts to scrape! ")
 #postint = int(post)
 #sub = input("Enter subreddit without /r/ ")
-main(10, 'whales')
+bot_main(10, 'whales')
 #filter_whales()
 #get_image()
