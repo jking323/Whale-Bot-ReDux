@@ -18,14 +18,30 @@ import cython
 import json
 import urllib.request as request
 import openpyxl as op
+import collections
+
+global lim
+global rows
+global log_created
+lim = 20
+sub = 'whales'
 
 
 def main(lim, sub):
+    global rows
+    global log_created
+    log_created = 0
     reddit = r
     if os.path.isfile('log.xlsx'):
         print('Log exists, skipping!')
+        log_created += 1
     else:
         make_xlxs()
+    if log_created == 1:
+        ms = op.load_workbook('log.xlsx')
+        ws1 = ms['Logs']
+        ws = ms.active
+        rows = ws1.max_row
 
     subreddit = reddit.subreddit(sub).hot(limit=lim)
     for submission in subreddit:
@@ -33,20 +49,17 @@ def main(lim, sub):
 
 
 def make_xlxs():
+    global log_created
+    print('Log not found, creating!')
     book = op.Workbook()
     ws = book.active
     log1 = book.create_sheet("Logs")
     log2 = book.create_sheet("Filtered Logs")
 
-    title1 = log1['A1']
-    title2 = log1['B1']
-    title1.value = 'id'
-    title2.value = 'url'
-    title1 = log2['A1']
-    title2 = log2['B1']
-    title1.value = 'id'
-    title2.value = 'url'
     book.save('log.xlsx')
+    print('log file created successfully!')
+    log_created += 1
+    return
 
 
 handler = logging.StreamHandler()
@@ -62,49 +75,51 @@ fields = ('title', 'url', 'id')
 
 
 def process_submission(submission):
-
-    to_dict = vars(submission)
-    sub_dict = {field: to_dict[field] for field in fields}
-    list_of_stuff.append(sub_dict)
-    json_str = json.dumps(list_of_stuff)
-    with open('data.json', 'w') as f:
-        json.dump(list_of_stuff, f, indent=4, sort_keys=True)
-    #filter_whales()
+    global rows
+    logs = 0
+    #print(submission)
+    if logs is not lim:
+        to_dict = vars(submission)
+        sub_dict = {field: to_dict[field] for field in fields}
+        list_of_stuff.append(sub_dict)
+        ms = op.load_workbook('log.xlsx')
+        ws1 = ms['Logs']
+        ws = ms.active
+        post_id = sub_dict['id']
+        post_title = sub_dict['title']
+        url = sub_dict['url']
+        #rows = int(ws.max_row)
+        ws1.cell(column=1, row=rows, value=str(post_id))
+        ws1.cell(column=2, row=rows, value=str(url))
+        ws1.cell(column=3, row=rows, value=str(post_title))
+        rows += 1
+        #ws_title.append(post_title)
+        #ws.append(post_id)
+        logs += 1
+    ms.save('log.xlsx')
+    filter_whales()
 
 
 def filter_whales():
     is_whale = "whale"
-    with open('data.json') as read_data:
-        data = json.load(read_data)
-        #print(len(data))
-        for title in data:
-            post_id = [title['id']]
-            post_title = [title['title']]
-            url = [title['url']]
-            count = 0
-            end_data = len(data)
-            whale_dict = {}
-            if is_whale in title['title'.lower()]:  # dictionary that the ID and URL of filtered posts gets added to
-                whale_dict.update({"id": post_id})  # updates dict with the id
-                whale_dict.update({"url": url})  # update dict with post
-                print(whale_dict)  # debug print statement
-                key = ["id", "url"]
-                #filter_book = wb()
-                #ws = filter_book.active
-                #for
-                post_id = ws[row1]
-                filter_url = ws[row2]
-                '''
-                try:
-                    with open('filter.csv', 'a') as filter_csv:
-                        write = csv.DictWriter(filter_csv, fieldnames = key)
-                        #write.writeheader()
-                        print(whale_dict)
-                        write.writerow(whale_dict)
-                except IOError:
-                    print('I/O error!')
-                get_image()
-                '''
+    ms = op.load_workbook('log.xlsx')
+    ws = ms.active
+    log_rows = ws.max_row
+    unfilter_logs = ms['Logs']
+    filter_logs = ms['Filtered Logs']
+    for row in range(2, log_rows+1):
+        for column in "A":
+            cell_name = "{}{}".format(column, row)
+            test = unfilter_logs[cell_name].value
+            unfilter_logs.cell(column=1, row=rows, value=test)
+            print(test)
+    ms.save('log.xlsx')
+    #unfilter_logs_value = unfilter_logs.cell(row=log_rows, column=1)
+    #temp_dict = collections.defaultdict(unfilter_logs_value)
+    #print(unfilter_logs_value)
+
+
+
 
 def get_image():
 
