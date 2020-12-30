@@ -112,12 +112,19 @@ def filter_whales():
     log_rows = ws.max_row
     unfilter_logs = ms['Logs']
     filter_logs = ms['Filtered Logs']
+    end_rows = ws.max_row
+    cells = ws['A1':'A' + str(end_rows)]
+    for c1 in cells:
+        print(c1)
+
+    '''
     for row in range(2, log_rows+1):
         for column in "A":
             cell_name = "{}{}".format(column, row)
             test = unfilter_logs[cell_name].value
             filter_logs.cell(column=1, row=rows, value=test)
             print(test)
+            '''
     ms.save('log.xlsx')
     #unfilter_logs_value = unfilter_logs.cell(row=log_rows, column=1)
     #temp_dict = collections.defaultdict(unfilter_logs_value)
