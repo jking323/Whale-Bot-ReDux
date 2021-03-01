@@ -18,3 +18,29 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+========
+Overview
+========
+Whale bot documentation
+-----------------------
+
+The goal of whale bot is recognize and catagorize whales using a convoluted nueral network.
+
+The current bot is used to scrape reddit and comment on posts containing pictures of whales though I intend on expanding into a mobile application that can be taken on whale watching trips and to be used for research and tracking purposes.
+
+======
+To Do:
+======
+
+- Fully implement logging for bot.
+- Improve the accuracy of the nueral network.
+
+
+:Author:
+    Jeremy King
+
+:Version: 0.01a(03/01/2020)
+
+
+
