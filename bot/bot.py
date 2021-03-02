@@ -107,11 +107,11 @@ def process_submission(submission):
 
 def filter_whales():
     is_whale = "whale"
-    ms = op.load_workbook('log.xlsx')
-    ws = ms.active
+    main_sheet = op.load_workbook('log.xlsx')
+    ws = main_sheet.active #ws = work_sheet
     log_rows = ws.max_row
-    unfilter_logs = ms['Logs']
-    filter_logs = ms['Filtered Logs']
+    unfilter_logs = main_sheet['Logs']
+    filter_logs = main_sheet['Filtered Logs']
     end_rows = ws.max_row
     cells = ws['A1':'A' + str(end_rows)]
     for c1 in cells:
