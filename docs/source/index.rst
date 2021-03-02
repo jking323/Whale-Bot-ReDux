@@ -9,7 +9,7 @@ Welcome to Whale Bot ReDux's documentation!
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
-map
+    map
 
 
 Indices and tables
