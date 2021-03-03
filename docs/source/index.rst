@@ -10,7 +10,7 @@ Welcome to Whale Bot ReDux's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   map
+   /map
 
 
 Indices and tables
