@@ -49,3 +49,26 @@ def make_xlxs():
     book.save('log.xlsx')
     return
 
+#global dict
+post_data = []
+data_fields = ('title','id','url')
+
+def procss_submission(submission, lim)
+    post_count = 0
+    if post_count is not lim:
+        write_to_dict = vars(submission)
+        sub_dictonary = {field: write_to_dict[field] for field in fields}
+        post_data.append(sub_dictonary)
+        main_sheet = op.load_workbook('log.xlxs')
+        working_sheet_unfiltered = main_sheet['Logs']
+        active_working_sheet = main_sheet.active
+        post_id = sub_dictonary['id']
+        post_title = sub_dictonary['title']
+        url = sub_dictonary['url']
+        rows = int(active_working_sheet.max_row)
+        active_working_sheet.cell(column=1, row=rows,value=str(post_id))
+        active_working_sheet.cell(column=2, row=rows, value=str(url))
+        active_working_sheet.cell(column=3, row=rows, value=str(post_title))
+        logs += 1
+    ms.save('log.xlsx')
+    filter_whales()
