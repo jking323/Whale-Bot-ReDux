@@ -18,6 +18,7 @@ import urllib.request as request
 import openpyxl as op
 import collections
 
+#sub = 'whales'
 def bot_main(lim, sub):
     
     log_created = 0
@@ -35,13 +36,13 @@ def bot_main(lim, sub):
     subreddit = reddit.subreddit(sub).hot(limit=lim)
     for submission in subreddit:
         process_submission(submission)
-    
+    filter_whales()
 
 
 
 def make_xlxs():
     print('Log not found, Creating!')
-    book = op.workbook()
+    book = op.workbook
     ws = book.active
     log1 = book.create_sheet("Logs")
     log2 = book.create_sheet("Filtered logs")
@@ -53,7 +54,7 @@ def make_xlxs():
 post_data = []
 data_fields = ('title','id','url')
 
-def procss_submission(submission, lim)
+def procss_submission(submission, lim):
     post_count = 0
     if post_count is not lim:
         write_to_dict = vars(submission)
@@ -71,4 +72,17 @@ def procss_submission(submission, lim)
         active_working_sheet.cell(column=3, row=rows, value=str(post_title))
         logs += 1
     ms.save('log.xlsx')
-    filter_whales()
+    #filter_whales()
+
+def filter_whales():
+    is_whale = "whale"
+    main_sheet = op.load_workbook('log.xlsx')
+    working_sheet = main_sheet.active
+    log_rows = working_sheet.max_row
+    unfiltered_log = main_sheet['Logs']
+    filtered_log = main_sheet['Filtered Logs']
+    end_row = ws.max_row
+    cells = unfiltered_log['A1':'A' + str(end_row)]
+    for c1 in cells:
+        print(cells)
+bot_main(10, 'whales')
