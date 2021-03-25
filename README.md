@@ -8,3 +8,4 @@ To Do:
 Tell reddit bot to scan front page for whale pictures and determine if post is of a whale
 from there post comment stating what type of whale and the certainty percentage of the guess.
 global title
+ 
