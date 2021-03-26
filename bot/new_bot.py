@@ -18,16 +18,18 @@ import urllib.request as request
 import openpyxl as op
 import collections
 
+global log_created
+
 #sub = 'whales'
 def bot_main(lim, sub):
-    
+    global log_created
     log_created = 0
     reddit = r
     if os.path.isfile('log.xlsx'):
         print('Log exists, skipping!')
         log_created += 1
     else:
-        make_xlxs()
+        make_xlsx()
     if log_created == 1:
         main_sheet = op.load_workbook('log.xlsx')
         unfiltered_work_sheet = main_sheet['Logs']
@@ -35,18 +37,19 @@ def bot_main(lim, sub):
         row_count = unfiltered_work_sheet
     subreddit = reddit.subreddit(sub).hot(limit=lim)
     for submission in subreddit:
-        process_submission(submission)
+        process_submission(submission, lim)
     filter_whales()
 
 
 
-def make_xlxs():
+def make_xlsx():
+    global log_created
     print('Log not found, Creating!')
-    book = op.workbook
+    book = op.Workbook()
     ws = book.active
     log1 = book.create_sheet("Logs")
     log2 = book.create_sheet("Filtered logs")
-
+    log_created += 1
     book.save('log.xlsx')
     return
 
@@ -54,13 +57,13 @@ def make_xlxs():
 post_data = []
 data_fields = ('title','id','url')
 
-def procss_submission(submission, lim):
+def process_submission(submission, lim):
     post_count = 0
     if post_count is not lim:
         write_to_dict = vars(submission)
-        sub_dictonary = {field: write_to_dict[field] for field in fields}
+        sub_dictonary = {field: write_to_dict[field] for field in data_fields}
         post_data.append(sub_dictonary)
-        main_sheet = op.load_workbook('log.xlxs')
+        main_sheet = op.load_workbook('log.xlsx')
         working_sheet_unfiltered = main_sheet['Logs']
         active_working_sheet = main_sheet.active
         post_id = sub_dictonary['id']
@@ -70,8 +73,8 @@ def procss_submission(submission, lim):
         active_working_sheet.cell(column=1, row=rows,value=str(post_id))
         active_working_sheet.cell(column=2, row=rows, value=str(url))
         active_working_sheet.cell(column=3, row=rows, value=str(post_title))
-        logs += 1
-    ms.save('log.xlsx')
+        post_count += 1
+    main_sheet.save('log.xlsx')
     #filter_whales()
 
 def filter_whales():
