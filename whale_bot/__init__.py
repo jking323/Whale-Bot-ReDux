@@ -1,3 +1,3 @@
-"""Whale Bot — scrape whale photos from Reddit and train a classifier on them."""
+"""Whale Bot — tagged hydrophone recordings -> spectrograms -> trained classifier."""
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"

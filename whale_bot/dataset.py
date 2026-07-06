@@ -1,12 +1,13 @@
 """Data loading for training and validation.
 
-Expects the standard torchvision ImageFolder layout:
+Consumes the spectrogram images produced by `process` in the standard
+torchvision ImageFolder layout:
 
-    datasets/train/<class_name>/*.jpg
-    datasets/val/<class_name>/*.jpg
+    datasets/spectrograms/train/<label>/*.png
+    datasets/spectrograms/val/<label>/*.png
 
-Class names are taken from the directory names (e.g. humpback, orca,
-not_a_whale), so adding a new species is just adding a new folder.
+Class names are taken from the directory names (e.g. orca, humpback, noise),
+which come straight from your annotation labels.
 """
 
 import torch
@@ -44,10 +45,9 @@ def _check_layout(path, split):
     classes = [p for p in path.iterdir() if p.is_dir()] if path.exists() else []
     if not classes:
         raise SystemExit(
-            f"No {split} data found at {path}.\n"
-            "Expected layout: datasets/"
-            f"{split}/<class_name>/*.jpg — sort images from datasets/raw/"
-            " into class folders first (see README)."
+            f"No {split} spectrograms found at {path}.\n"
+            "Run `python whale_bot.py process` to build the dataset from "
+            "audio + annotations first (see README)."
         )
 
 

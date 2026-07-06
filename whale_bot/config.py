@@ -1,8 +1,12 @@
 """Central configuration for Whale Bot.
 
+The pipeline turns tagged hydrophone recordings into spectrogram images and
+trains an image classifier on them:
+
+    audio + tags  ->  segment by tag  ->  mel-spectrogram  ->  train  ->  predict
+
 Paths are anchored to the repository root so every command works no matter
-which directory you run it from. Reddit credentials come from environment
-variables (or a local .env file) — never commit them to the repo.
+which directory you run it from.
 """
 
 import os
@@ -17,48 +21,29 @@ except ImportError:  # python-dotenv is optional; plain env vars still work
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
-# Scraped post metadata
+# Raw inputs
 DATA_DIR = REPO_ROOT / "data"
-POSTS_CSV = DATA_DIR / "posts.csv"
+AUDIO_DIR = DATA_DIR / "audio"            # downloaded/imported recordings (.wav, .flac, .mp3)
+ANNOTATIONS_DIR = DATA_DIR / "annotations"  # separate tag files (CSV / Audacity / Raven)
 
-# Image datasets
+# Derived spectrogram image datasets (torchvision ImageFolder layout)
 DATASETS_DIR = REPO_ROOT / "datasets"
-RAW_IMAGE_DIR = DATASETS_DIR / "raw"      # unlabeled downloads land here
-TRAIN_DIR = DATASETS_DIR / "train"        # train/<class_name>/*.jpg
-VAL_DIR = DATASETS_DIR / "val"            # val/<class_name>/*.jpg
+SPECTROGRAM_DIR = DATASETS_DIR / "spectrograms"
+TRAIN_DIR = SPECTROGRAM_DIR / "train"     # train/<label>/*.png
+VAL_DIR = SPECTROGRAM_DIR / "val"         # val/<label>/*.png
 
 # Model checkpoints
 MODEL_DIR = REPO_ROOT / "models"
 DEFAULT_CHECKPOINT = MODEL_DIR / "whale_classifier.pt"
 
-
-def reddit_client():
-    """Build an authenticated (read-only) PRAW client from the environment.
-
-    Required environment variables:
-        REDDIT_CLIENT_ID
-        REDDIT_CLIENT_SECRET
-    Optional:
-        REDDIT_USER_AGENT
-    """
-    import praw
-
-    missing = [
-        key
-        for key in ("REDDIT_CLIENT_ID", "REDDIT_CLIENT_SECRET")
-        if not os.getenv(key)
-    ]
-    if missing:
-        raise SystemExit(
-            "Missing Reddit credentials: "
-            + ", ".join(missing)
-            + "\nCopy .env.example to .env and fill in your values, or export"
-            " them as environment variables. Create an app at"
-            " https://www.reddit.com/prefs/apps (script type)."
-        )
-
-    return praw.Reddit(
-        client_id=os.environ["REDDIT_CLIENT_ID"],
-        client_secret=os.environ["REDDIT_CLIENT_SECRET"],
-        user_agent=os.getenv("REDDIT_USER_AGENT", "whale-bot-redux (by u/unknown)"),
-    )
+# --- Audio / spectrogram parameters -------------------------------------------
+# These define what "a spectrogram" means across the whole project. Keep them
+# consistent between processing (training data) and prediction, or the model
+# sees a different distribution at inference time.
+SAMPLE_RATE = 22050      # Hz; audio is resampled to this on load
+CLIP_SECONDS = 3.0       # length of each spectrogram window
+N_FFT = 1024             # FFT window size
+HOP_LENGTH = 256         # STFT hop; controls time resolution
+N_MELS = 128             # mel frequency bins (spectrogram height)
+FMIN = 0                 # lowest mel frequency (Hz)
+FMAX = SAMPLE_RATE // 2  # highest mel frequency (Hz); Nyquist by default

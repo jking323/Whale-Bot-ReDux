@@ -4,14 +4,18 @@
 Current project
 ===============
 
-The project has been restructured into a proper Python package (``whale_bot/``)
-with a working end-to-end pipeline:
+The project is a proper Python package (``whale_bot/``) implementing an
+end-to-end bioacoustic pipeline: tagged hydrophone recordings are turned into
+mel-spectrogram images and used to train an image classifier.
 
-- ``scrape`` — log subreddit posts to ``data/posts.csv`` (deduplicated on re-runs)
-- ``download`` — fetch direct image links into ``datasets/raw/``
-- ``train`` — fine-tune a pretrained ResNet18 on hand-labeled class folders
-- ``predict`` — classify an image or folder with a saved checkpoint
+- ``ingest`` — bring recordings into ``data/audio/`` (local files, direct URLs,
+  or a manifest of URLs)
+- ``process`` — slice each tagged span, convert to a log-mel spectrogram, and
+  save it under ``datasets/spectrograms/{train,val}/<label>/``
+- ``train`` — fine-tune a pretrained ResNet18 on the spectrogram images
+- ``predict`` — window a recording into spectrograms, classify each, and
+  average the scores into one prediction
 
-Reddit credentials now come from environment variables (see ``.env.example``)
-instead of being hard-coded. See the repository README for full setup and
-usage instructions.
+Tags are supplied *separately* from audio (CSV, Audacity label tracks, or Raven
+selection tables) and dropped into ``data/annotations/``. See the repository
+README for full setup and usage instructions.

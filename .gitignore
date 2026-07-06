@@ -1,4 +1,4 @@
-# Secrets — never commit credentials
+# Secrets
 .env
 
 # Python
@@ -13,13 +13,12 @@ venv/
 *.iml
 .vscode/
 
-# Data & artifacts (kept local; regenerate with scrape/download/train)
+# Data & artifacts (kept local; regenerate with ingest/process/train)
 data/
 datasets/*
 !datasets/.gitkeep
 models/*
 !models/.gitkeep
-log.xlsx
 
 # Sphinx build output
 docs/build/

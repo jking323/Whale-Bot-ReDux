@@ -1,19 +1,23 @@
-"""Run inference with a trained checkpoint.
+"""Run inference on audio with a trained checkpoint.
 
-Usage (via the CLI):
-    python whale_bot.py predict path/to/image.jpg
-    python whale_bot.py predict datasets/raw/            # whole folder
+An audio file is converted to spectrogram windows using the exact same
+parameters as training (config.py), each window is classified, and the
+per-window probabilities are averaged into a single prediction for the clip.
+
+    python whale_bot.py predict path/to/recording.wav
+    python whale_bot.py predict data/audio/            # every recording in a folder
 """
 
 from pathlib import Path
 
+import numpy as np
 import torch
-from PIL import Image
 
 from .config import DEFAULT_CHECKPOINT
 from .dataset import EVAL_TRANSFORM
-from .downloader import IMAGE_EXTENSIONS
+from .ingest import AUDIO_EXTENSIONS
 from .model import build_model
+from .spectrogram import audio_to_images
 
 
 def load_checkpoint(checkpoint=DEFAULT_CHECKPOINT, device="cpu"):
@@ -30,38 +34,51 @@ def load_checkpoint(checkpoint=DEFAULT_CHECKPOINT, device="cpu"):
     return model, state["classes"]
 
 
-def predict_image(model, classes, image_path, device="cpu", topk=3):
-    """Return [(class_name, probability), ...] sorted by confidence."""
-    image = Image.open(image_path).convert("RGB")
-    batch = EVAL_TRANSFORM(image).unsqueeze(0).to(device)
+def predict_audio(model, classes, audio_path, device="cpu", topk=3):
+    """Classify one recording; returns (results, n_windows).
+
+    results is [(class_name, mean_probability), ...] sorted by confidence,
+    averaged over every spectrogram window in the recording.
+    """
+    images = audio_to_images(audio_path)
+    if not images:
+        return [], 0
+
+    batch = torch.stack([EVAL_TRANSFORM(img) for img in images]).to(device)
     with torch.no_grad():
-        probs = torch.softmax(model(batch)[0], dim=0)
+        probs = torch.softmax(model(batch), dim=1)  # (n_windows, n_classes)
+    mean_probs = probs.mean(dim=0)
+
     topk = min(topk, len(classes))
-    values, indices = probs.topk(topk)
-    return [(classes[i], v.item()) for v, i in zip(values, indices)]
+    values, indices = mean_probs.topk(topk)
+    results = [(classes[i], v.item()) for v, i in zip(values, indices)]
+    return results, len(images)
 
 
 def predict(target, checkpoint=DEFAULT_CHECKPOINT, topk=3):
-    """Predict a single image or every image in a directory."""
+    """Predict a single recording or every recording in a directory."""
     model, classes = load_checkpoint(checkpoint)
 
     target = Path(target)
     if target.is_dir():
-        images = sorted(
-            p for p in target.iterdir() if p.suffix.lower() in IMAGE_EXTENSIONS
+        clips = sorted(
+            p for p in target.iterdir() if p.suffix.lower() in AUDIO_EXTENSIONS
         )
-        if not images:
-            raise SystemExit(f"No images found in {target}")
+        if not clips:
+            raise SystemExit(f"No audio files found in {target}")
     elif target.is_file():
-        images = [target]
+        clips = [target]
     else:
         raise SystemExit(f"No such file or directory: {target}")
 
-    for path in images:
-        results = predict_image(model, classes, path, topk=topk)
+    for path in clips:
+        results, n_windows = predict_audio(model, classes, path, topk=topk)
+        if not results:
+            print(f"{path.name}: (empty / unreadable audio)")
+            continue
         best_class, best_prob = results[0]
         rest = ", ".join(f"{c} {p:.1%}" for c, p in results[1:])
-        line = f"{path.name}: {best_class} ({best_prob:.1%})"
+        line = f"{path.name}: {best_class} ({best_prob:.1%}, {n_windows} windows)"
         if rest:
             line += f"  [next: {rest}]"
         print(line)
