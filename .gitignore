@@ -1,8 +1,24 @@
-# Created by .ignore support plugin (hsz.mobi)
-### Ignore jetbrains files
+# Secrets
+.env
 
-# IntelliJ project files
-.idea
+# Python
+__pycache__/
+*.py[cod]
+*.swp
+venv/
+.venv/
+
+# IDE
+.idea/
 *.iml
-out
-gen
+.vscode/
+
+# Data & artifacts (kept local; regenerate with ingest/process/train)
+data/
+datasets/*
+!datasets/.gitkeep
+models/*
+!models/.gitkeep
+
+# Sphinx build output
+docs/build/
