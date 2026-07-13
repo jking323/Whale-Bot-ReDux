@@ -2,6 +2,7 @@
 
 [![Documentation Status](https://readthedocs.org/projects/whale-bot-redux/badge/?version=alpha)](https://whale-bot-redux.readthedocs.io/en/alpha/?badge=alpha)
 ![License](https://img.shields.io/github/license/jking323/Whale-Bot-ReDux)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jking323/Whale-Bot-ReDux/blob/claude/model-training-repo-setup-2nj7iz/notebooks/whale_bot_colab.ipynb)
 
 Identify whales from their calls. This tool pulls **hydrophone recordings**
 and their **separate tag files**, slices the tagged spans into **mel
@@ -69,6 +70,29 @@ python whale_bot.py predict data/audio/new_recording.wav
 
 Run any command with `--help` for options.
 
+## Train on Colab (TPU / GPU)
+
+Don't have a local GPU? Run the whole pipeline in Google Colab on a free TPU or
+GPU:
+
+**[▶ Open the notebook in Colab](https://colab.research.google.com/github/jking323/Whale-Bot-ReDux/blob/claude/model-training-repo-setup-2nj7iz/notebooks/whale_bot_colab.ipynb)**
+&nbsp;(`notebooks/whale_bot_colab.ipynb`)
+
+The notebook clones this repo, installs deps, mounts Google Drive (for your
+recordings, tags, and saved models), then runs `process → train → predict`. The
+trainer auto-detects the accelerator — set `Runtime → Change runtime type` to
+**TPU** or **GPU** and flip the `USE_TPU` flag to match.
+
+> **TPU vs GPU:** for a ResNet18 on spectrograms, a **GPU (T4)** runtime is
+> usually the better default — XLA compilation overhead dominates at this model
+> size, so a TPU often isn't faster end-to-end until the model/batch grows. The
+> notebook supports both so you can compare. TPU training uses PyTorch/XLA,
+> whose `torch`/`torchvision`/`torch_xla` versions must be kept in lockstep (the
+> notebook pins them, with a pointer to the current matrix if they drift).
+
+The same TPU support works outside Colab: install `torch_xla`, and
+`whale_bot.py train` picks up the XLA device automatically.
+
 ## Annotation formats
 
 Tags live in `data/annotations/`, separate from the audio. Three formats are
@@ -133,6 +157,8 @@ whale_bot/
   predict.py      audio -> windowed spectrograms -> averaged prediction
   cli.py          argparse subcommands
 whale_bot.py      entry point
+notebooks/
+  whale_bot_colab.ipynb   run the pipeline on a Colab TPU/GPU
 ```
 
 ## Roadmap
