@@ -2,7 +2,7 @@
 
 [![Documentation Status](https://readthedocs.org/projects/whale-bot-redux/badge/?version=alpha)](https://whale-bot-redux.readthedocs.io/en/alpha/?badge=alpha)
 ![License](https://img.shields.io/github/license/jking323/Whale-Bot-ReDux)
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jking323/Whale-Bot-ReDux/blob/claude/model-training-repo-setup-2nj7iz/notebooks/whale_bot_colab.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jking323/Whale-Bot-ReDux/blob/Alpha/notebooks/whale_bot_colab.ipynb)
 
 Identify whales from their calls. This tool pulls **hydrophone recordings**
 and their **separate tag files**, slices the tagged spans into **mel
@@ -75,7 +75,7 @@ Run any command with `--help` for options.
 Don't have a local GPU? Run the whole pipeline in Google Colab on a free TPU or
 GPU:
 
-**[▶ Open the notebook in Colab](https://colab.research.google.com/github/jking323/Whale-Bot-ReDux/blob/claude/model-training-repo-setup-2nj7iz/notebooks/whale_bot_colab.ipynb)**
+**[▶ Open the notebook in Colab](https://colab.research.google.com/github/jking323/Whale-Bot-ReDux/blob/Alpha/notebooks/whale_bot_colab.ipynb)**
 &nbsp;(`notebooks/whale_bot_colab.ipynb`)
 
 The notebook clones this repo, installs deps, mounts Google Drive (for your
